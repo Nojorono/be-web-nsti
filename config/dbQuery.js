@@ -1,5 +1,22 @@
 const {Sequelize} = require('sequelize');
 
+require("dotenv").config()
+const env = process.env.NODE_ENV
+console.log(env)
+if (env === 'development' || env === 'test'){
+}
+
+const capsEnv = env.toUpperCase() 
+
+const username = process.env["DB_USERNAME_" + capsEnv]
+const password = process.env["DB_PASSWORD_" + capsEnv]
+const database = process.env["DB_NAME_" + capsEnv]
+const host = process.env["DB_HOST_" + capsEnv]
+const dialect = process.env["DB_DIALECT_" + capsEnv]
+const port = process.env["DB_PORT_" + capsEnv]
+
+
+
 // const env = process.env.NODE_ENV
 
 // if (env === 'development' || env === 'test'){
@@ -15,7 +32,6 @@ const {Sequelize} = require('sequelize');
 // const dialect = process.env["DB_DIALECT_" + capsEnv]
 // const port = process.env["DB_PORT_" + capsEnv]
 
-require('dotenv').config({ path: '../.env' });
 // console.log(process.env.DB_DATABASE)
 
 // const sequelize = new Sequelize(
@@ -38,13 +54,13 @@ require('dotenv').config({ path: '../.env' });
 // );
 
 const sequelize = new Sequelize(
-    "public",
-    "root",
-    "",
+    database,
+    username,
+    password,
     {
-      dialect: 'mysql',
-      host: "localhost",
-      port: "3306",
+      dialect: dialect,
+      host: host,
+      port: port,
       dialectOptions: {
         useUTC: false,
         dateStrings: true,
