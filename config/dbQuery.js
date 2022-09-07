@@ -3,8 +3,8 @@ const {Sequelize} = require('sequelize');
 require("dotenv").config()
 const env = process.env.NODE_ENV
 console.log(env)
-if (env === 'development' || env === 'test'){
-}
+// if (env === 'development' || env === 'test'){
+// }
 
 const capsEnv = env.toUpperCase() 
 
