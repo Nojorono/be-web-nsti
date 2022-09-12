@@ -33,12 +33,12 @@ if (env === 'development' || env === 'test'){
 
 const capsEnv = env.toUpperCase() 
 
-const username = process.env["DB_USERNAME_" + capsEnv]
-const password = process.env["DB_PASSWORD_" + capsEnv]
-const database = process.env["DB_NAME_" + capsEnv]
-const host = process.env["DB_HOST_" + capsEnv]
-const dialect = process.env["DB_DIALECT_" + capsEnv]
-const port = process.env["DB_PORT_" + capsEnv]
+const username = process.env["DB_USERNAME_" + capsEnv] ?? "nikkisu1_prod"
+const password = process.env["DB_PASSWORD_" + capsEnv] ?? "Dy1Io2sfe3KY"
+const database = process.env["DB_NAME_" + capsEnv] ?? "nikkisu1_public"
+const host = process.env["DB_HOST_" + capsEnv] ?? "localhost"
+const dialect = process.env["DB_DIALECT_" + capsEnv] ?? "mysql"
+const port = process.env["DB_PORT_" + capsEnv] ?? 3306
 
 console.log(username, password, database, host,"INI TEST")
 
@@ -60,12 +60,18 @@ module.exports = {
     port
   },
   "production": { 
-    use_env_variable:"DATABASE_URL",
-    dialectOptions: {
-      ssl: {
-          rejectUnauthorized: false
-      }
-    }
+    username,
+    password,
+    database,
+    host,
+    dialect,
+    port,
+    use_env_variable:"localhost",
+    // dialectOptions: {
+    //   ssl: {
+    //       rejectUnauthorized: false
+    //   }
+    // }
   }
 }
 

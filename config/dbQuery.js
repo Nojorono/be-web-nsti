@@ -58,7 +58,7 @@ const sequelize = new Sequelize(
     username,
     password,
     {
-      dialect: dialect,
+      dialect: 'mysql',
       host: host,
       port: port,
       dialectOptions: {

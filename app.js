@@ -1,7 +1,7 @@
 
 const express = require('express')
 const {engine} = require('express-handlebars')
-const fileUpload = require('express-fileUpload')
+//const fileUpload = require('express-fileUpload')
 const db = require('./config/dbQuery')
 var multer = require('multer');
 const path = require('path')
