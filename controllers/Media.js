@@ -23,7 +23,9 @@ class Controller {
     static async addmedia(req,res,next){
         const tx = await sequelize.transaction()
         try{
-        let {title,description} = req.body
+        let {title,description,location} = req.body
+
+        console.log(req.file, '======= FILE KU')
 
         if(!req.file){
             return res.status(500).json({message:"media Image needs to be uploaded"})
@@ -38,6 +40,7 @@ class Controller {
             id : id,
             title:title,
             description:description,
+            location: location
         }
 
         let imageInput = {
@@ -75,6 +78,8 @@ class Controller {
                     type:QueryTypes.SELECT,
                     replacements : {pageNum, pageSize}
                 })
+
+                // let pagesleft = 
     
                 return res.status(200).json(data)
             }
@@ -115,6 +120,7 @@ class Controller {
             let updateInput = {
                 title:req.body.title,
                 description:req.body.description, 
+                location: req.body.location
             }
 
             if(!req.file){

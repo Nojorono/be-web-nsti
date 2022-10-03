@@ -26,6 +26,7 @@ app.use(bodyParser.json());
 // for parsing multipart/form-data
 // app.use(upload.array()); 
 app.use(express.static('image'));
+app.use('/image', express.static('image'));
 
 // var upload = multer({ dest: './image'});
 // var type = upload.single('sampleFile');

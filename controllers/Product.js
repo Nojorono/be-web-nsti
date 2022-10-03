@@ -72,7 +72,10 @@ class Controller {
         
         try{
 
+          
+
             let data = await sequelize.query(query.getProd,{type:QueryTypes.SELECT})
+
 
             return res.status(200).json(data)
 
@@ -84,13 +87,27 @@ class Controller {
     static async ProductById(req,res,next){
         let {id} = req.params
         try{
-        const [Product] = await Promise.all([
-            sequelize.query(query.getImageProd, {
+        const [Product,Images] = await Promise.all([
+            sequelize.query(query.getProducts, {
                  type: QueryTypes.SELECT,
                  replacements : {id}
+            }),
+            sequelize.query(query.getImages, {
+                type: QueryTypes.SELECT,
+                replacements : {id}
             })
         ])
-        return res.status(200).json(Product)
+
+      
+
+        let result = Product[0].images = Images
+
+        console.log(Product,'INI PRODUCT')
+   
+        
+
+
+        return res.status(200).json(result)
             
         } catch (err){
             next(err)
