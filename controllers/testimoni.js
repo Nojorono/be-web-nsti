@@ -92,6 +92,7 @@ class Controller {
         try{
 
             let updateInput = {
+                name:req.body.name,
                 title:req.body.title,
                 description:req.body.description, 
             }
@@ -113,7 +114,7 @@ class Controller {
             {type: QueryTypes.SELECT})
 
 
-            await fs.unlinkSync(".\\" + imageData[0].imagePath)
+            await fs.unlinkSync("./" + imageData[0].imagePath)
 
             
 
@@ -152,7 +153,7 @@ class Controller {
             })
             await Testimoni.destroy({where: {id}})
             await Images.destroy({where: {id}})
-            await fs.unlinkSync(".\\"+ image[0].imagePath);
+            await fs.unlinkSync("./"+ image[0].imagePath);
             await tx.commit()
             return res.status(200).json({message: 'Testimoni deleted'})
             

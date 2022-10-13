@@ -2,7 +2,10 @@ const query = {
 
     getTestimoni:`select t.*,i.imagePath, i.category from Testimonis t 
     left join Images i on i.id = t.id
+    order by t.updatedAt desc
     limit :pageSize offset :pageNum`,
+
+    countCareer:`select COUNT(*) from careers c`,
 
     mediaDate : `select p.*, i.id_image, i.imagePath, i.imageName, i.category from media p 
     left join Images i on i.id = p.id
@@ -23,7 +26,8 @@ const query = {
    where p.id = :id`,
 
    getImages : `select i.imageName, i.id_image, i.category from Images i
-   where i.id = :id`,
+   where i.id = :id
+   order by i.category desc`,
 
    getImage:`select i.imagePath, i.category  from Images i
    where i.id = :id`,
@@ -44,7 +48,12 @@ const query = {
    left join Testimonis p on p.id = i.id
    where i.id = :id`,
 
-   getMedia:`select COUNT(p.id), p.*,  i.id_image, i.imagePath, i.imageName, i.category from media p 
+   getCountMedia:`select COUNT(*) from media p`,
+   getCountMediaDate:`select COUNT(*) from media p 
+   where (cast(p.createdAt as date)) between :fDate and :sDate
+   order by p.updatedAt desc
+   limit :pageSize offset :pageNum`,
+   getMedia:`select p.*,  i.id_image, i.imagePath, i.imageName, i.category from media p 
    left join Images i on i.id = p.id
    order by p.updatedAt desc
    limit :pageSize offset :pageNum`,
@@ -65,7 +74,7 @@ const query = {
    limit :pageSize`,
    ilikeMedia:`select m.id,m.title from media m 
    where lower(m.title) like  :str
-   limit :pageSize`
+   limit :pageSize `
 }
 
 module.exports = query

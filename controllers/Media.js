@@ -73,23 +73,36 @@ class Controller {
         try{
 
             if(!fDate || !sDate){
+                console.log('masuk')
 
                 let data = await sequelize.query(query.getMedia,{
                     type:QueryTypes.SELECT,
                     replacements : {pageNum, pageSize}
                 })
+                let count = await sequelize.query(query.getCountMedia,{
+                    type:QueryTypes.SELECT
+                })
 
-                // let pagesleft = 
+                console.log(pageSize, count)
+                let pagesleft = Math.ceil(count[0]['COUNT(*)']/pageSize)
     
-                return res.status(200).json(data)
+                return res.status(200).json({data,totalcontent:count[0]['COUNT(*)'],pagesleft:pagesleft})
             }
-
+ 
             let data = await sequelize.query(query.mediaDate,{
                 type:QueryTypes.SELECT,
                 replacements : {pageNum, pageSize, fDate, sDate}
             })
+            let dataCount = await sequelize.query(query.getCountMediaDate,{
+                type:QueryTypes.SELECT,
+                replacements : {pageNum, pageSize, fDate, sDate}
+            })
 
-            return res.status(200).json(data)
+      
+            let pagesleft = Math.ceil(dataCount[0]['COUNT(*)']/pageSize)
+    
+
+            return res.status(200).json({data,totalcontent:dataCount[0]['COUNT(*)'],pagesleft:pagesleft})
 
         }catch(err){
             next(err)
@@ -141,9 +154,9 @@ class Controller {
 
             console.log(imageData[0].imagePath,"INI IMAGE ATA")
 
-            console.log(".\\"+ imageData[0].imagePath,`INI DIRNAME`)
+            console.log("./"+ imageData[0].imagePath,`INI DIRNAME`)
 
-            await fs.unlinkSync(".\\" + imageData[0].imagePath)
+            await fs.unlinkSync("./" + imageData[0].imagePath)
 
             
 
@@ -185,7 +198,7 @@ class Controller {
 
             await media.destroy({where: {id}})
             await Images.destroy({where: {id}})
-            await fs.unlinkSync(".\\"+ image[0].imagePath);
+            await fs.unlinkSync("./"+ image[0].imagePath);
             await tx.commit()
             return res.status(200).json({message: 'media deleted'})
             

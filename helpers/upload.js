@@ -12,8 +12,7 @@ var storage =   multer.diskStorage({
       callback(null, './image');  
     },  
     filename: function (req, file, callback) {  
-        console.log(req,"INI FILE NAME") 
-        console.log(file,"INI FILENYA") 
+      
         if(!file){
           res.status(500).json({message:"FILE IS NOT THERE"})
         }  

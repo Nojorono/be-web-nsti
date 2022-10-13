@@ -10,14 +10,14 @@ const fs = require('fs')
 class Controller {
 
     static async addProduct(req,res,next){
-        console.log(req.files, 'INI REQ FILE')
+
 
         // console.log(req, 'INI REQ DOANG')
         const tx = await sequelize.transaction()
         try{
         let {title,description} = req.body
 
-        console.log(req.files,'INI FILE')
+
         if(!req.files){
             return res.status(500).json({message:"Product Image needs to be uploaded"})
         }
@@ -100,9 +100,13 @@ class Controller {
 
       
 
-        let result = Product[0].images = Images
+         Product[0].images = Images
 
-        console.log(Product,'INI PRODUCT')
+         let result = Product
+         
+
+   
+        // console.log(Product,'INI PRODUCT')
    
         
 
@@ -117,6 +121,7 @@ class Controller {
     static async ProductUpdate(req, res, next) {
         let id = req.body.id
         const tx = await sequelize.transaction()
+        console.log('MASUK UPDATE')
         try{
 
             let updateInput = {
@@ -139,7 +144,7 @@ class Controller {
                 return res.status(200).json({message: updateInput})
             }
 
-            
+            console.log('SEBELUM IMAGE DATA')
             let imageData = await sequelize.query(`
             select i.imagePath from Images i
             where i.id ='${id}'`,

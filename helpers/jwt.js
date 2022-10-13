@@ -9,6 +9,7 @@ function generateToken(payload){
 }
 
 function verifyToken(token){
+    console.log(token,'INI TOKEN')
     return jwt.verify(token,KEY)
 }
 

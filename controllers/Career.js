@@ -52,7 +52,14 @@ class Controller {
                     replacements: {pageNum, pageSize}
                 })
 
-            return res.status(200).json(data)
+            let count = await sequelize.query(query.countCareer,{
+                type:QueryTypes.SELECT
+            })
+
+            console.log(pageSize, count)
+            let pagesleft = Math.ceil(count[0]['COUNT(*)']/pageSize)
+
+            return res.status(200).json({data,totalcontent:count,pagesLeft: pagesleft})
 
         }catch(err){
             next(err)
