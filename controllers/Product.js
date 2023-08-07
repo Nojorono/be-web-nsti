@@ -171,7 +171,6 @@ class Controller {
 
   static async deleteProduct(req, res, next) {
     let { id } = req.body;
-    console.log(req.body, "MASUK DELETE");
     const tx = await sequelize.transaction();
     try {
       let image = await sequelize.query(query.getImageProd, {
@@ -180,7 +179,7 @@ class Controller {
       });
 
       for (let i = 0; i < image.length; i++) {
-        await fs.unlinkSync(image[i].imagePath);
+        await fs.unlink(image[i].imagePath);
       }
 
       await Product.destroy({ where: { id } });
