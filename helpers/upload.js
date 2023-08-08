@@ -2,6 +2,7 @@ var multer = require('multer');
 const path = require('path')
 const image = require('../models/images');
 // const image1 = require('../../client/image')
+const { v4: uuid } = require("uuid");
 
 
 
@@ -16,8 +17,8 @@ var storage =   multer.diskStorage({
         if(!file){
           res.status(500).json({message:"FILE IS NOT THERE"})
         }  
-      callback(null,
-        Date.now() + path.extname(file.originalname))  ;  
+      const unixName = `${uuid()}${path.extname(file.originalname)}`;
+      callback(null, unixName)  ;  
     }  
   });  
 
