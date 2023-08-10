@@ -13,9 +13,7 @@ const app = express() ;
 
 const cors = require('cors')
 
-
-
-app.use(cors())
+// app.use(cors())
 var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({
     extended: false
@@ -30,7 +28,7 @@ app.use('/image', express.static('image'));
 
 // var upload = multer({ dest: './image'});
 // var type = upload.single('sampleFile');
-app.use(express.urlencoded())
+app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 
 var storage =   multer.diskStorage({ 

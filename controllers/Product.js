@@ -154,8 +154,8 @@ class Controller {
             
             
             for(let i = 0 ; i < imageData.length; i ++){
-                console.log(".\\"+ imageData[i].imagePath,`INI DIRNAME`)
-                await fs.unlinkSync(".\\" + imageData[i].imagePath)
+                console.log("./"+ imageData[i].imagePath,`INI DIRNAME`)
+                await fs.unlinkSync("./" + imageData[i].imagePath)
             }
             
             // return res.status(200).json(req.files)
@@ -202,7 +202,7 @@ class Controller {
            
         }catch(err){
             await tx.rollback()
-            next(err)
+          return res.status(500).json({message:err})
         }
     }
 
@@ -218,7 +218,7 @@ class Controller {
             })
 
             for(let i = 0 ; i<image.length ; i++){
-                await fs.unlinkSync(image[i].imagePath);
+                await fs.unlinkSync("./" + image[i].imagePath);
             }
            
             await Product.destroy({where: {id}})
