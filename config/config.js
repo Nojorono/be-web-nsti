@@ -33,8 +33,8 @@ if (env === 'development' || env === 'test'){
 
 const capsEnv = env.toUpperCase() 
 
-const username = process.env["DB_USERNAME_" + capsEnv] ?? "nikkisu1_prod"
-const password = process.env["DB_PASSWORD_" + capsEnv] ?? "Dy1Io2sfe3KY"
+const username = process.env["DB_USERNAME_" + capsEnv] ?? "nikkisu1_dev"
+const password = process.env["DB_PASSWORD_" + capsEnv] ?? "nikki1234!SUPER"
 const database = process.env["DB_NAME_" + capsEnv] ?? "nikkisu1_public"
 const host = process.env["DB_HOST_" + capsEnv] ?? "localhost"
 const dialect = process.env["DB_DIALECT_" + capsEnv] ?? "mysql"

@@ -54,13 +54,13 @@ const port = process.env["DB_PORT_" + capsEnv]
 // );
 
 const sequelize = new Sequelize(
-    database,
-    username,
-    password,
+    "nikkisu1_public",
+    "nikkisu1_dev",
+    "nikki1234!SUPER",
     {
       dialect: 'mysql',
-      host: host,
-      port: port,
+      host: "localhost",
+      port: 3306,
       dialectOptions: {
         useUTC: false,
         dateStrings: true,

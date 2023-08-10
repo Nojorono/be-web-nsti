@@ -10,17 +10,13 @@ var fs = require("fs");
 
 const app = express();
 
-const cors = require("cors");
-
-app.use(cors());
-// var bodyParser = require("body-parser");
-// app.use(
-//   express.urlencoded({
-//     extended: true,
-//   })
-// );
-
-// app.use(express.json());
+// app.use(cors())
+var bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({
+    extended: false
+ }));
+ 
+app.use(bodyParser.json());
 
 // for parsing multipart/form-data
 // app.use(upload.array());
@@ -29,33 +25,34 @@ app.use("/image", express.static("image"));
 
 // var upload = multer({ dest: './image'});
 // var type = upload.single('sampleFile');
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
+app.use(express.urlencoded({ extended: true }))
+app.use(express.json())
 
-var storage = multer.diskStorage({
-  destination: function (req, file, callback) {
-    console.log(req, "INI DESTINATION");
-    callback(null, "./image");
-  },
-  filename: function (req, file, callback) {
-    console.log(req, "INI FILE NAME");
-    callback(null, Date.now() + path.extname(file.originalname));
-  },
-});
+var storage =   multer.diskStorage({ 
+    
+    destination: function (req, file, callback) { 
+        console.log(req,"INI DESTINATION")  
+      callback(null, './image');  
+    },  
+    filename: function (req, file, callback) {  
+        console.log(req,"INI FILE NAME")  
+      callback(null,Date.now() + path.extname(file.originalname));  
+    }  
+  });  
 
-var upload = multer({ storage: storage }).single("sampleFile");
+  var upload = multer({ storage : storage}).single('sampleFile');  
 
-app.post("/", (req, res) => {
-  console.log(req.body, "MASUK");
-  upload(req, res, function (err) {
-    console.log(req.body, "MASUK UPLOAD");
-    console.log(req.file, "MASUK UPLOAD");
-    if (err) {
-      return res.end("Error uploading file.");
-    }
-    res.end("File is uploaded successfully!");
-  });
-});
+  app.post('/',(req,res) =>{  
+    console.log(req.body,'MASUK')
+    upload(req,res,function(err) {
+        console.log(req.body,'MASUK UPLOAD')  
+        console.log(req.file,'MASUK UPLOAD')  
+        if(err) {  
+            return res.end("Error uploading file.");  
+        }  
+        res.end("File is uploaded successfully!");  
+    });  
+});  
 
 //templating engine
 

@@ -1,6 +1,6 @@
 const query = {
 
-    getTestimoni:`select t.*,i.imagePath, i.category from Testimonis t 
+    getTestimoni:`select t.*,i.imagePath,i.imageName, i.category from Testimonis t 
     left join Images i on i.id = t.id
     order by t.updatedAt desc
     limit :pageSize offset :pageNum`,
@@ -22,7 +22,7 @@ const query = {
    left join Products p on p.id = i.id
    where i.id = :id`,
 
-   getProducts : `select p.*  from products p
+   getProducts : `select p.*  from Products p
    where p.id = :id`,
 
    getImages : `select i.imageName, i.id_image, i.category from Images i
@@ -42,7 +42,7 @@ const query = {
    getProd: `select p.*, i.* from Products p 
    left join Images i on i.id = p.id
    where i.category = '01'
-   order by p.updatedAt desc
+   order by p.createdAt desc
    `,
    getTestimoniDetail:`select i.imagePath ,i.imageName,i.id_image,p.* from Images i
    left join Testimonis p on p.id = i.id
