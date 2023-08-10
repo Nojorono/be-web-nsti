@@ -1,17 +1,14 @@
-
-const express = require('express')
-const {engine} = require('express-handlebars')
+const express = require("express");
+const { engine } = require("express-handlebars");
 //const fileUpload = require('express-fileUpload')
-const db = require('./config/dbQuery')
-var multer = require('multer');
-const path = require('path')
+const db = require("./config/dbQuery");
+var multer = require("multer");
+const path = require("path");
 // var upload = multer();
-var fs = require('fs');
+var fs = require("fs");
 // const testDB = require('./config/dbQuery')
 
-const app = express() ;
-
-const cors = require('cors')
+const app = express();
 
 // app.use(cors())
 var bodyParser = require('body-parser');
@@ -22,9 +19,9 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 
 // for parsing multipart/form-data
-// app.use(upload.array()); 
-app.use(express.static('image'));
-app.use('/image', express.static('image'));
+// app.use(upload.array());
+app.use(express.static("image"));
+app.use("/image", express.static("image"));
 
 // var upload = multer({ dest: './image'});
 // var type = upload.single('sampleFile');
@@ -59,21 +56,17 @@ var storage =   multer.diskStorage({
 
 //templating engine
 
-app.engine('hbs', engine({ extname: '.hbs'}))
-app.set('view engine', 'hbs')
+app.engine("hbs", engine({ extname: ".hbs" }));
+app.set("view engine", "hbs");
 
-app.get('/', (req, res) =>{
-    res.render('index')
-})
+app.get("/", (req, res) => {
+  res.render("index");
+});
 
+const router = require("./routes");
+app.use(router);
 
-
-const router = require('./routes')
-app.use(router)
-
-module.exports = app
-
-
+module.exports = app;
 
 // const port = process.env.PORT || 3000 ;
 
