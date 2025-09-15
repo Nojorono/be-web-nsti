@@ -1,6 +1,6 @@
 const express = require("express");
 const { engine } = require("express-handlebars");
-//co//nst cors = require("cors");
+const cors = require("cors");
 //const fileUpload = require('express-fileUpload')
 const db = require("./config/dbQuery");
 var multer = require("multer");
@@ -11,10 +11,20 @@ var fs = require("fs");
 
 const app = express();
 
-// Enable CORS for all routes
-// app.use(cors());
+// Configure CORS with specific options to avoid duplicate headers
+const corsOptions = {
+  origin: ['https://nikkisuper.co.id', 'http://localhost:8002', 'http://localhost:3000'],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['origin', 'x-requested-with', 'content-type', 'access_token', 'authorization', 'Authorization']
+};
 
-r = require('body-parser');
+app.use(cors(corsOptions));
+
+// Handle preflight requests
+app.options('*', cors(corsOptions));
+
+var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({
     extended: false
  }));
