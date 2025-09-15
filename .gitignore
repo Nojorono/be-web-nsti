@@ -1,3 +1,5 @@
 node_modules
 image
 
+.env
+test-*.js*
