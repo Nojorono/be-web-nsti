@@ -11,18 +11,23 @@ var fs = require("fs");
 
 const app = express();
 
-// Configure CORS with specific options to avoid duplicate headers
-const corsOptions = {
-  origin: ['https://nikkisuper.co.id', 'http://localhost:8002', 'http://localhost:3000'],
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['origin', 'x-requested-with', 'content-type', 'access_token', 'authorization', 'Authorization']
-};
-
-app.use(cors(corsOptions));
-
-// Handle preflight requests
-app.options('*', cors(corsOptions));
+// Simplified CORS for reverse proxy setup - let Apache handle main CORS headers
+app.use((req, res, next) => {
+  // Only add CORS headers if they don't already exist (in case Apache didn't add them)
+  if (!res.get('Access-Control-Allow-Origin')) {
+    res.header('Access-Control-Allow-Origin', 'https://nikkisuper.co.id');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'origin, x-requested-with, content-type, access_token, authorization, Authorization');
+    res.header('Access-Control-Allow-Credentials', 'true');
+  }
+  
+  // Handle preflight requests
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  
+  next();
+});
 
 var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({
