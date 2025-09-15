@@ -24,12 +24,17 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon bin/http.js",
-    "dev": "NODE_ENV=development npx nodemon bin/http.js"
+    "dev": "cross-env NODE_ENV=development nodemon bin/http.js",
+    "dev:windows": "set NODE_ENV=development && nodemon bin/http.js",
+    "dev:unix": "NODE_ENV=development nodemon bin/http.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "volta": {
     "node": "16.16.0"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3"
   }
 }

@@ -1,5 +1,6 @@
 const express = require("express");
 const { engine } = require("express-handlebars");
+const cors = require("cors");
 //const fileUpload = require('express-fileUpload')
 const db = require("./config/dbQuery");
 var multer = require("multer");
@@ -10,7 +11,9 @@ var fs = require("fs");
 
 const app = express();
 
-// app.use(cors())
+// Enable CORS for all routes
+app.use(cors());
+
 var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({
     extended: false

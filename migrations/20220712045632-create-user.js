@@ -18,10 +18,10 @@ module.exports = {
         type: Sequelize.STRING
       },
       first_name:{
-         type: DataTypes.STRING
+         type: Sequelize.STRING
         },
       last_name:{
-        type: DataTypes.STRING
+        type: Sequelize.STRING
         },
       createdAt: {
         allowNull: false,
