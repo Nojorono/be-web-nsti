@@ -21,14 +21,18 @@ class ContentController {
         });
       }
 
-      // Format response based on language
+      // Return all fields for CMS management
       const responseData = {
         id: content.id,
         type: content.type,
-        title: lang === 'en' ? content.title_en : content.title_id,
-        content: lang === 'en' ? content.content_en : content.content_id,
-        meta_description: lang === 'en' ? content.meta_description_en : content.meta_description_id,
-        meta_keywords: lang === 'en' ? content.meta_keywords_en : content.meta_keywords_id,
+        title_id: content.title_id,
+        title_en: content.title_en,
+        content_id: content.content_id,
+        content_en: content.content_en,
+        meta_description_id: content.meta_description_id,
+        meta_description_en: content.meta_description_en,
+        meta_keywords_id: content.meta_keywords_id,
+        meta_keywords_en: content.meta_keywords_en,
         status: content.status,
         createdAt: content.createdAt,
         updatedAt: content.updatedAt
