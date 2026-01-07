@@ -1,16 +1,26 @@
 const express = require("express");
 const { engine } = require("express-handlebars");
-//const fileUpload = require('express-fileUpload')
+const cors = require("cors");
 const db = require("./config/dbQuery");
 var multer = require("multer");
 const path = require("path");
-// var upload = multer();
 var fs = require("fs");
-// const testDB = require('./config/dbQuery')
 
 const app = express();
 
-// app.use(cors())
+// Configure CORS
+const corsOptions = {
+  origin: [
+    'http://localhost:8002', // Nuxt frontend
+    'http://localhost:3001', // Alternative port
+    'https://back-api.nikkisuper.my.id' // Production frontend (if needed)
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+};
+
+app.use(cors(corsOptions));
 var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({
     extended: false

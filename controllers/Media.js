@@ -5,6 +5,7 @@ const { QueryTypes } = require("sequelize");
 const query = require("../controllers/query");
 const { v4: uuid } = require("uuid");
 const fs = require("fs");
+const path = require("path");
 
 class Controller {
   static async filterMedia(req, res, next) {
@@ -17,13 +18,22 @@ class Controller {
     try {
       let { title, description, location } = req.body;
 
-      console.log(req.file, "======= FILE KU");
+      console.log("=== UPLOAD MEDIA DEBUG ===");
+      console.log("req.file:", req.file);
+      console.log("req.body:", req.body);
 
       if (!req.file) {
+        console.error("ERROR: No file uploaded!");
         return res
           .status(500)
           .json({ message: "media Image needs to be uploaded" });
       }
+
+      console.log("File uploaded successfully:");
+      console.log("- filename:", req.file.filename);
+      console.log("- path:", req.file.path);
+      console.log("- size:", req.file.size);
+      console.log("- mimetype:", req.file.mimetype);
 
       let id = uuid();
       let id_image = uuid();
@@ -38,7 +48,7 @@ class Controller {
       let imageInput = {
         id: id,
         id_image: id_image,
-        imagePath: req.file.path,
+        imagePath: `image/${req.file.filename}`, // Store relative path for consistency
         imageName: req.file.filename,
         category: "03",
       };
@@ -59,15 +69,19 @@ class Controller {
     const { page, size } = req.query;
     const { fDate, sDate } = req.body;
 
-    const pageNum = Number(page);
-    const pageSize = Number(size);
+    const pageNum = Number(page) || 0;
+    const pageSize = Number(size) || 6;
+    
+    // Calculate offset properly
+    const offset = pageNum * pageSize;
+    
     try {
       if (!fDate || !sDate) {
         console.log("masuk");
 
         let data = await sequelize.query(query.getMedia, {
           type: QueryTypes.SELECT,
-          replacements: { pageNum, pageSize },
+          replacements: { pageNum: offset, pageSize },
         });
         let count = await sequelize.query(query.getCountMedia, {
           type: QueryTypes.SELECT,
@@ -87,7 +101,7 @@ class Controller {
 
       let data = await sequelize.query(query.mediaDate, {
         type: QueryTypes.SELECT,
-        replacements: { pageNum, pageSize, fDate, sDate },
+        replacements: { pageNum: offset, pageSize, fDate, sDate },
       });
       let dataCount = await sequelize.query(query.getCountMediaDate, {
         type: QueryTypes.SELECT,
@@ -153,9 +167,22 @@ class Controller {
 
       console.log(imageData[0].imagePath, "INI IMAGE ATA");
 
-      console.log("./" + imageData[0].imagePath, `INI DIRNAME`);
-
-      await fs.unlinkSync("./" + imageData[0].imagePath);
+      // Normalize path - handle both backslash and forward slash
+      let imagePath = imageData[0].imagePath.replace(/\\/g, '/');
+      // Remove 'image/' prefix if exists to avoid double path
+      if (imagePath.startsWith('image/')) {
+        imagePath = imagePath.substring(6); // Remove 'image/' prefix
+      }
+      const fullPath = path.join(__dirname, '..', 'image', imagePath);
+      console.log("Deleting image at:", fullPath);
+      console.log("Original path from DB:", imageData[0].imagePath);
+      
+      if (fs.existsSync(fullPath)) {
+        await fs.unlinkSync(fullPath);
+        console.log("Image deleted successfully");
+      } else {
+        console.warn("Image file not found:", fullPath);
+      }
 
       await media.update(updateInput, {
         where: { id },
@@ -163,7 +190,7 @@ class Controller {
       });
       console.log(req.file, "INI IMAGE PATH");
       let updateImage = {
-        imagePath: req.file.path,
+        imagePath: `image/${req.file.filename}`, // Store relative path for consistency
         imageName: req.file.filename,
       };
 
@@ -191,7 +218,23 @@ class Controller {
 
       await media.destroy({ where: { id } });
       await Images.destroy({ where: { id } });
-      await fs.unlinkSync("./" + image[0].imagePath);
+      
+      // Normalize path - handle both backslash and forward slash
+      let imagePath = image[0].imagePath.replace(/\\/g, '/');
+      // Remove 'image/' prefix if exists to avoid double path
+      if (imagePath.startsWith('image/')) {
+        imagePath = imagePath.substring(6); // Remove 'image/' prefix
+      }
+      const fullPath = path.join(__dirname, '..', 'image', imagePath);
+      console.log("Deleting image at:", fullPath);
+      console.log("Original path from DB:", image[0].imagePath);
+      
+      if (fs.existsSync(fullPath)) {
+        await fs.unlinkSync(fullPath);
+        console.log("Image deleted successfully");
+      } else {
+        console.warn("Image file not found:", fullPath);
+      }
       await tx.commit();
       return res.status(200).json({ message: "media deleted" });
     } catch (err) {

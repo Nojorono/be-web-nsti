@@ -18,7 +18,7 @@ module.exports = {
         type: Sequelize.STRING
       },
       link: {
-        type: sequelize.STRING
+        type: Sequelize.STRING
       },
       createdAt: {
         allowNull: false,
