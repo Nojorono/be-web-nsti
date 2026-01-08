@@ -1,6 +1,9 @@
 # Apache configuration for Node.js backend
 # This file should be placed in the backend root directory
 
+# Disable DirectoryIndex to prevent Apache from looking for index.php
+DirectoryIndex disabled
+
 # Enable proxy module and setup reverse proxy
 <IfModule mod_proxy.c>
   ProxyPreserveHost On
@@ -15,10 +18,14 @@
 # Alternative: Use RewriteRule if ProxyPass doesn't work
 <IfModule mod_rewrite.c>
   RewriteEngine On
+  RewriteBase /
   
-  # Proxy requests to Node.js (only if mod_proxy not working)
-  RewriteCond %{REQUEST_FILENAME} !-f
-  RewriteCond %{REQUEST_FILENAME} !-d
+  # Don't proxy if file exists (for static files)
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule . - [L]
+  
+  # Proxy all other requests to Node.js
   RewriteRule ^(.*)$ http://127.0.0.1:3000/$1 [P,L]
 </IfModule>
 
