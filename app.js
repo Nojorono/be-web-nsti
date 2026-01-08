@@ -15,9 +15,11 @@ const allowedOrigins = process.env.FRONTEND_URL
   : [
       'http://localhost:8002', // Nuxt frontend development
       'http://localhost:3000', // Alternative port
-      'https://back-api.nikkisuper.my.id', // Production frontend (fallback)
+      'https://back-api.nikkisuper.my.id', // Production backend API
       'https://nikkisuper.my.id', // Production domain (fallback)
-      'https://www.nikkisuper.my.id' // Production domain www (fallback)
+      'https://www.nikkisuper.my.id', // Production domain www (fallback)
+      'https://nikkisuper.co.id', // Production domain co.id
+      'https://www.nikkisuper.co.id' // Production domain www co.id
     ];
 
 const corsOptions = {
@@ -25,18 +27,28 @@ const corsOptions = {
     // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
     
+    // Check if origin is in allowed list or in development mode
     if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV === 'development') {
       callback(null, true);
     } else {
+      // Log for debugging
+      console.log('CORS blocked origin:', origin);
+      console.log('Allowed origins:', allowedOrigins);
       callback(new Error('Not allowed by CORS'));
     }
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
+  exposedHeaders: ['Content-Length', 'Content-Type'],
+  maxAge: 86400 // 24 hours
 };
 
+// Apply CORS middleware
 app.use(cors(corsOptions));
+
+// Handle preflight requests explicitly (OPTIONS method)
+app.options('*', cors(corsOptions));
 var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({
     extended: false
