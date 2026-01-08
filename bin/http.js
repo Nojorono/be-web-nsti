@@ -1,6 +1,33 @@
 // Load .env FIRST before requiring app (important for PM2!)
 const path = require('path')
-require('dotenv').config({ path: path.resolve(__dirname, '../.env') })
+const fs = require('fs')
+
+// Try multiple .env paths
+const envPaths = [
+  path.resolve(__dirname, '../.env'),
+  path.resolve(__dirname, '../.env.production'),
+  path.join(process.cwd(), '.env'),
+  path.join(process.cwd(), '.env.production')
+]
+
+let envLoaded = false
+for (const envPath of envPaths) {
+  if (fs.existsSync(envPath)) {
+    console.log(`📄 Loading .env from: ${envPath}`)
+    require('dotenv').config({ path: envPath })
+    envLoaded = true
+    break
+  }
+}
+
+if (!envLoaded) {
+  console.warn('⚠️  Warning: No .env file found! Using environment variables from PM2 or system.')
+}
+
+// Debug: Log if password is loaded (without showing actual password)
+console.log(`🔐 DB_PASSWORD_PRODUCTION: ${process.env.DB_PASSWORD_PRODUCTION ? '***SET***' : 'undefined'}`)
+console.log(`👤 DB_USERNAME_PRODUCTION: ${process.env.DB_USERNAME_PRODUCTION || 'undefined'}`)
+console.log(`🗄️  DB_NAME_PRODUCTION: ${process.env.DB_NAME_PRODUCTION || 'undefined'}`)
 
 const app = require('../app')
 const port = process.env.PORT || 3000
