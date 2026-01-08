@@ -1,3 +1,7 @@
+// Load .env FIRST before requiring app (important for PM2!)
+const path = require('path')
+require('dotenv').config({ path: path.resolve(__dirname, '../.env') })
+
 const app = require('../app')
 const port = process.env.PORT || 3000
 
@@ -5,4 +9,5 @@ const port = process.env.PORT || 3000
 app.listen(port, '0.0.0.0', () => {
   console.log(`🚀 Backend listening on port ${port}`)
   console.log(`📍 Access at: http://0.0.0.0:${port} or http://localhost:${port}`)
+  console.log(`📊 NODE_ENV: ${process.env.NODE_ENV || 'not set'}`)
 })
