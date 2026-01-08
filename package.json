@@ -26,18 +26,21 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon bin/http.js",
+    "start": "node bin/http.js",
     "dev": "cross-env NODE_ENV=development nodemon bin/http.js",
     "dev:windows": "set NODE_ENV=development && nodemon bin/http.js",
     "dev:unix": "NODE_ENV=development nodemon bin/http.js",
     "create-admin": "node createAdminUser.js",
-    "create-admin:direct": "node createAdminUserDirect.js"
+    "create-admin:direct": "node createAdminUserDirect.js",
+    "pm2:start": "pm2 start bin/http.js --name nikki-backend",
+    "pm2:stop": "pm2 stop nikki-backend",
+    "pm2:restart": "pm2 restart nikki-backend"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "volta": {
-    "node": "16.16.0"
+    "node": "20.0.0"
   },
   "devDependencies": {
     "cross-env": "^7.0.3"

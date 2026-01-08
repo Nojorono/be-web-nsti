@@ -1,0 +1,19 @@
+# Apache configuration for Node.js backend
+# This file should be placed in the backend root directory
+
+RewriteEngine On
+
+# Proxy requests to Node.js application running on port 3000
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ http://localhost:3000/$1 [P,L]
+
+# Or if using ProxyPass (uncomment if above doesn't work)
+# ProxyPass / http://localhost:3000/
+# ProxyPassReverse / http://localhost:3000/
+
+# Enable CORS headers (if needed)
+# Header always set Access-Control-Allow-Origin "*"
+# Header always set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+# Header always set Access-Control-Allow-Headers "Content-Type, Authorization"
+
