@@ -25,30 +25,51 @@ const allowedOrigins = process.env.FRONTEND_URL
 const corsOptions = {
   origin: function (origin, callback) {
     // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) return callback(null, true);
+    if (!origin) {
+      return callback(null, true);
+    }
     
     // Check if origin is in allowed list or in development mode
-    if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV === 'development') {
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else if (process.env.NODE_ENV === 'development') {
+      // In development, allow all origins
       callback(null, true);
     } else {
       // Log for debugging
-      console.log('CORS blocked origin:', origin);
-      console.log('Allowed origins:', allowedOrigins);
-      callback(new Error('Not allowed by CORS'));
+      console.log('❌ CORS blocked origin:', origin);
+      console.log('✅ Allowed origins:', allowedOrigins);
+      callback(new Error(`Not allowed by CORS. Origin: ${origin}`));
     }
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
   exposedHeaders: ['Content-Length', 'Content-Type'],
-  maxAge: 86400 // 24 hours
+  preflightContinue: false,
+  optionsSuccessStatus: 204,
+  maxAge: 86400 // 24 hours - cache preflight for 24 hours
 };
 
-// Apply CORS middleware
+// Log CORS configuration on startup
+console.log('🌐 CORS Configuration:');
+console.log('   Allowed Origins:', allowedOrigins);
+console.log('   NODE_ENV:', process.env.NODE_ENV || 'not set');
+
+// Apply CORS middleware FIRST, before any routes or other middleware
 app.use(cors(corsOptions));
 
-// Handle preflight requests explicitly (OPTIONS method)
+// Handle preflight requests explicitly (OPTIONS method) - must be before other routes
 app.options('*', cors(corsOptions));
+
+// Log all OPTIONS requests for debugging
+app.use((req, res, next) => {
+  if (req.method === 'OPTIONS') {
+    console.log('✈️  Preflight request:', req.method, req.url, 'Origin:', req.headers.origin);
+  }
+  next();
+});
+
 var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({
     extended: false
