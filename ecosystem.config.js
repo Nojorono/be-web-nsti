@@ -7,6 +7,8 @@ module.exports = {
       exec_mode: 'fork',
       watch: false,
       max_memory_restart: '500M',
+      // Uncomment dan sesuaikan jika perlu explicit Node.js 20 path
+      // interpreter: '/home/nikkisu1/nodevenv/back-api.nikkisuper.my.id/nikkiBE/20/bin/node',
       env: {
         NODE_ENV: 'production',
         PORT: 3000

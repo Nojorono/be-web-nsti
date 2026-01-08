@@ -60,12 +60,32 @@ console.log('   NODE_ENV:', process.env.NODE_ENV || 'not set');
 app.use(cors(corsOptions));
 
 // Handle preflight requests explicitly (OPTIONS method) - must be before other routes
-app.options('*', cors(corsOptions));
+// This handles ALL OPTIONS requests (preflight) before routes are processed
+app.options('*', (req, res) => {
+  console.log('✈️  Preflight request:', req.method, req.url, 'Origin:', req.headers.origin);
+  
+  // Get origin from request
+  const origin = req.headers.origin;
+  
+  // Check if origin is allowed
+  if (!origin || allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV === 'development') {
+    // Set CORS headers manually for preflight
+    res.setHeader('Access-Control-Allow-Origin', origin || '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    res.setHeader('Access-Control-Max-Age', '86400');
+    res.status(204).end();
+  } else {
+    console.log('❌ CORS preflight blocked for origin:', origin);
+    res.status(403).end();
+  }
+});
 
-// Log all OPTIONS requests for debugging
+// Log all requests for debugging (optional)
 app.use((req, res, next) => {
   if (req.method === 'OPTIONS') {
-    console.log('✈️  Preflight request:', req.method, req.url, 'Origin:', req.headers.origin);
+    console.log('✈️  OPTIONS request:', req.url, 'Origin:', req.headers.origin);
   }
   next();
 });
