@@ -4,29 +4,31 @@
 # Disable DirectoryIndex to prevent Apache from looking for index.php
 DirectoryIndex disabled
 
+# Disable auto-indexing
+Options -Indexes
+
 # Enable proxy module and setup reverse proxy
 <IfModule mod_proxy.c>
   ProxyPreserveHost On
   ProxyRequests Off
   
-  # Proxy all requests to Node.js at 127.0.0.1:3000
-  # Using ProxyPass is more reliable for reverse proxy
-  ProxyPass / http://127.0.0.1:3000/
+  # Proxy ALL requests (including root /) to Node.js at 127.0.0.1:3000
+  # Force proxy even for root path to prevent index.php lookup
+  ProxyPass / http://127.0.0.1:3000/ nocanon
   ProxyPassReverse / http://127.0.0.1:3000/
+  
+  # Force proxy for root path explicitly
+  ProxyPassMatch ^/$ http://127.0.0.1:3000/ nocanon
 </IfModule>
 
-# Alternative: Use RewriteRule if ProxyPass doesn't work
+# Fallback: Use RewriteRule if ProxyPass doesn't work
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
   
-  # Don't proxy if file exists (for static files)
-  RewriteCond %{REQUEST_FILENAME} -f [OR]
-  RewriteCond %{REQUEST_FILENAME} -d
-  RewriteRule . - [L]
-  
-  # Proxy all other requests to Node.js
-  RewriteRule ^(.*)$ http://127.0.0.1:3000/$1 [P,L]
+  # Force proxy all requests including root / to Node.js
+  # Don't check for files, proxy everything to avoid index.php lookup
+  RewriteRule ^(.*)$ http://127.0.0.1:3000/$1 [P,L,QSA]
 </IfModule>
 
 # Enable CORS headers (if needed)
