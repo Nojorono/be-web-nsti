@@ -9,11 +9,29 @@ const config = require(__dirname + '/../config/config.js')[env];
 const db = {};
 
 let sequelize;
-if (config.use_env_variable) {
+
+// Fallback: Jika config tidak valid (username/database undefined), gunakan dbQuery.js langsung
+if (!config || !config.username || !config.database) {
+  console.log('⚠️  Warning: Using dbQuery.js directly due to invalid config');
+  const dbQuery = require(__dirname + '/../config/dbQuery.js');
+  sequelize = dbQuery;
+} else if (config.use_env_variable) {
     sequelize = new Sequelize(config.database, config.username, config.password, config);
-  //sequelize = new Sequelize(process.env[config.use_env_variable], config);
 } else {
-  sequelize = new Sequelize(config.database, config.username, config.password, config);
+  // Pastikan semua parameter yang diperlukan ada
+  sequelize = new Sequelize(
+    config.database,
+    config.username,
+    config.password,
+    {
+      host: config.host,
+      dialect: config.dialect || 'mysql',
+      port: config.port || 3306,
+      dialectOptions: config.dialectOptions,
+      timezone: config.timezone || '+07:00',
+      logging: config.logging || false
+    }
+  );
 }
 
 fs

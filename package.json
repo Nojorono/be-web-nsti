@@ -4,35 +4,43 @@
   "description": "",
   "main": "app.js",
   "dependencies": {
+    "@nuxt/core": "^2.18.1",
+    "@nuxtjs/axios": "^5.13.6",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.0",
     "cors": "^2.8.5",
-    "dotenv": "^16.0.1",
-    "express": "^4.18.1",
-    "express-fileupload": "^1.4.0",
-    "express-handlebars": "^6.0.6",
+    "dotenv": "^16.6.1",
+    "express": "^4.21.2",
+    "express-fileupload": "^1.5.2",
+    "express-handlebars": "^6.0.7",
     "jsonwebtoken": "^8.5.1",
     "multer": "^1.4.5-lts.1",
     "mysql": "^2.18.1",
     "mysql2": "^2.3.3",
     "nodemon": "^2.0.19",
     "pg": "^8.7.3",
-    "sequelize": "^6.21.2",
+    "sequelize": "^6.37.7",
     "sequelize-cli": "^6.4.1",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
+    "vuetify": "^3.10.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon bin/http.js",
+    "start": "node bin/http.js",
     "dev": "cross-env NODE_ENV=development nodemon bin/http.js",
     "dev:windows": "set NODE_ENV=development && nodemon bin/http.js",
-    "dev:unix": "NODE_ENV=development nodemon bin/http.js"
+    "dev:unix": "NODE_ENV=development nodemon bin/http.js",
+    "create-admin": "node createAdminUser.js",
+    "create-admin:direct": "node createAdminUserDirect.js",
+    "pm2:start": "pm2 start bin/http.js --name nikki-backend",
+    "pm2:stop": "pm2 stop nikki-backend",
+    "pm2:restart": "pm2 restart nikki-backend"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "volta": {
-    "node": "16.16.0"
+    "node": "20.0.0"
   },
   "devDependencies": {
     "cross-env": "^7.0.3"

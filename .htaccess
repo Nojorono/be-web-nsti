@@ -1,0 +1,36 @@
+# Apache configuration for Node.js backend
+# This file should be placed in the backend root directory
+
+# Disable DirectoryIndex to prevent Apache from looking for index.php
+DirectoryIndex disabled
+DirectoryIndex index.html index.htm
+
+# Disable auto-indexing
+Options -Indexes
+
+# Force proxy ALL requests including root path BEFORE Apache tries to find files
+# RewriteRule MUST be FIRST to intercept before DirectoryIndex lookup
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+  
+  # Force proxy ALL requests (including root /) to Node.js
+  # This must be FIRST, before any file checking or DirectoryIndex lookup
+  RewriteRule ^(.*)$ http://127.0.0.1:3000/$1 [P,L,QSA]
+</IfModule>
+
+# Enable proxy module as fallback
+<IfModule mod_proxy.c>
+  ProxyPreserveHost On
+  ProxyRequests Off
+  
+  # Proxy all requests to Node.js
+  ProxyPass / http://127.0.0.1:3000/ nocanon
+  ProxyPassReverse / http://127.0.0.1:3000/
+</IfModule>
+
+# Enable CORS headers (if needed)
+# Header always set Access-Control-Allow-Origin "*"
+# Header always set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+# Header always set Access-Control-Allow-Headers "Content-Type, Authorization"
+

@@ -5,9 +5,7 @@ const cors = require("cors");
 const db = require("./config/dbQuery");
 var multer = require("multer");
 const path = require("path");
-// var upload = multer();
 var fs = require("fs");
-// const testDB = require('./config/dbQuery')
 
 const app = express();
 
@@ -78,7 +76,23 @@ app.engine("hbs", engine({ extname: ".hbs" }));
 app.set("view engine", "hbs");
 
 app.get("/", (req, res) => {
-  res.render("index");
+  // Return JSON response for API root
+  res.json({
+    success: true,
+    message: "Nikki Super Backend API",
+    version: "1.0.0",
+    endpoints: {
+      health: "/health",
+      user: "/user",
+      product: "/product",
+      media: "/media",
+      career: "/career",
+      testimoni: "/testimoni",
+      content: "/content",
+      searchbar: "/searchbar"
+    },
+    timestamp: new Date().toISOString()
+  });
 });
 
 const router = require("./routes");

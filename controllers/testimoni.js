@@ -30,7 +30,7 @@ class Controller {
       let imageInput = {
         id: id,
         id_image: id_image,
-        imagePath: req.file.path,
+        imagePath: `image/${req.file.filename}`, // Store relative path for consistency
         imageName: req.file.filename,
         category: "04",
       };
@@ -106,7 +106,22 @@ class Controller {
         { type: QueryTypes.SELECT }
       );
 
-      await fs.unlinkSync("./" + imageData[0].imagePath);
+      // Normalize path - handle both backslash and forward slash
+      let imagePath = imageData[0].imagePath.replace(/\\/g, '/');
+      // Remove 'image/' prefix if exists to avoid double path
+      if (imagePath.startsWith('image/')) {
+        imagePath = imagePath.substring(6); // Remove 'image/' prefix
+      }
+      const fullPath = path.join(__dirname, '..', 'image', imagePath);
+      console.log("Deleting image at:", fullPath);
+      console.log("Original path from DB:", imageData[0].imagePath);
+      
+      if (fs.existsSync(fullPath)) {
+        await fs.unlinkSync(fullPath);
+        console.log("Image deleted successfully");
+      } else {
+        console.warn("Image file not found:", fullPath);
+      }
 
       await Testimoni.update(updateInput, {
         where: { id },
@@ -114,7 +129,7 @@ class Controller {
       });
 
       let updateImage = {
-        imagePath: req.file.path,
+        imagePath: `image/${req.file.filename}`, // Store relative path for consistency
         imageName: req.file.filename,
       };
 
@@ -140,7 +155,19 @@ class Controller {
       });
       await Testimoni.destroy({ where: { id } });
       await Images.destroy({ where: { id } });
-      await fs.unlinkSync("./" + image[0].imagePath);
+      
+      // Handle both relative and absolute paths
+      const imagePath = image[0].imagePath.startsWith('image/') 
+        ? image[0].imagePath 
+        : `image/${image[0].imagePath}`;
+      const fullPath = path.join(__dirname, '..', imagePath);
+      console.log("Deleting image at:", fullPath);
+      
+      if (fs.existsSync(fullPath)) {
+        await fs.unlinkSync(fullPath);
+      } else {
+        console.warn("Image file not found:", fullPath);
+      }
       await tx.commit();
       return res.status(200).json({ message: "Testimoni deleted" });
     } catch (err) {
