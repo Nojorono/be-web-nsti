@@ -14,8 +14,9 @@ console.log('DB_NAME_' + capsEnv + ':', process.env["DB_NAME_" + capsEnv]);
 console.log('DB_HOST_' + capsEnv + ':', process.env["DB_HOST_" + capsEnv]);
 console.log('');
 
-const username = process.env["DB_USERNAME_" + capsEnv] ?? "root"
-const password = process.env["DB_PASSWORD_" + capsEnv] ?? "admin123"
+const username = process.env["DB_USERNAME_" + capsEnv] ?? "nikkisu1_prod"
+// const password = process.env["DB_PASSWORD_" + capsEnv] ?? "nikki1234!SUPER"
+const password = process.env["DB_PASSWORD_" + capsEnv] ?? "Dy1Io2sfe3KY"
 const database = process.env["DB_NAME_" + capsEnv] ?? "nikkisu1_public"
 // Pastikan menggunakan IPv4 (127.0.0.1) bukan localhost untuk menghindari masalah IPv6
 let host = process.env["DB_HOST_" + capsEnv] ?? "127.0.0.1"

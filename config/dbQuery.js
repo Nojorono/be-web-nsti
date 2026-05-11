@@ -24,9 +24,9 @@ const sequelize = new Sequelize(
     username,
     password,
     {
-      dialect: dialect,
-      host: finalHost, // Pastikan menggunakan IPv4
-      port: parseInt(port),
+      dialect: 'mysql',
+      host: host,
+      port: port,
       dialectOptions: {
         // useUTC tidak valid untuk MySQL2, dihapus
         dateStrings: true,
