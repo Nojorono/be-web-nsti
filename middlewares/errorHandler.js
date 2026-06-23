@@ -30,6 +30,10 @@ function errorHandler (err,req,res,next){
           res.setHeader('Access-Control-Allow-Origin', origin);
           res.setHeader('Access-Control-Allow-Credentials', 'true');
         }
+
+        if (err.message === 'Only image files are allowed!') {
+          return res.status(400).json({ message: 'Hanya file gambar yang diperbolehkan.' });
+        }
         
         switch(err.name){
             case 'SequelizeValidationError' :
@@ -51,6 +55,15 @@ function errorHandler (err,req,res,next){
             case 'Not Found' :
                 res.status(404).json({message: 'Not Found'})
                 break;
+            case 'MulterError' :
+                if (err.code === 'LIMIT_FILE_SIZE') {
+                  return res.status(413).json({
+                    message: 'Ukuran file terlalu besar. Maksimal 10 MB per file.',
+                  });
+                }
+                return res.status(400).json({
+                  message: `Upload gagal: ${err.message}`,
+                });
             default:
                 // Handle CORS errors specially
                 if (err.message && err.message.includes('CORS')) {
