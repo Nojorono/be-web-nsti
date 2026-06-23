@@ -1,6 +1,5 @@
 const express = require("express");
 const { engine } = require("express-handlebars");
-const cors = require("cors");
 //const fileUpload = require('express-fileUpload')
 const db = require("./config/dbQuery");
 var multer = require("multer");
@@ -9,13 +8,12 @@ var fs = require("fs");
 
 const app = express();
 
-const productionOrigins = new Set([
-  "https://back-api.nikkisuper.my.id",
-  "https://nikkisuper.my.id",
-  "https://www.nikkisuper.my.id",
-  "https://nikkisuper.co.id",
-  "https://www.nikkisuper.co.id",
-  "http://localhost:8003",
+const productionHosts = new Set([
+  "back-api.nikkisuper.my.id",
+  "nikkisuper.my.id",
+  "www.nikkisuper.my.id",
+  "nikkisuper.co.id",
+  "www.nikkisuper.co.id",
 ]);
 
 function isLocalDevOrigin(origin) {
@@ -30,21 +28,32 @@ function isLocalDevOrigin(origin) {
   }
 }
 
+function isAllowedProductionOrigin(origin) {
+  try {
+    return productionHosts.has(new URL(origin).hostname);
+  } catch {
+    return false;
+  }
+}
+
 function resolveCorsOrigin(req) {
   const origin = req.headers.origin;
   if (!origin) return "https://nikkisuper.co.id";
-  if (productionOrigins.has(origin)) return origin;
+  if (isAllowedProductionOrigin(origin)) return origin;
   if (process.env.NODE_ENV !== "production" && isLocalDevOrigin(origin)) {
     return origin;
   }
-  return "https://nikkisuper.co.id";
+  return null;
 }
 
 // Simplified CORS for reverse proxy setup - let Apache handle main CORS headers
 app.use((req, res, next) => {
   // Only add CORS headers if they don't already exist (in case Apache didn't add them)
   if (!res.get("Access-Control-Allow-Origin")) {
-    res.header("Access-Control-Allow-Origin", resolveCorsOrigin(req));
+    const allowedOrigin = resolveCorsOrigin(req);
+    if (allowedOrigin) {
+      res.header("Access-Control-Allow-Origin", allowedOrigin);
+    }
     res.header("Vary", "Origin");
     res.header(
       "Access-Control-Allow-Methods",

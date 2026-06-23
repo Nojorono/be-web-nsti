@@ -4,21 +4,29 @@ function errorHandler (err,req,res,next){
         
         // Ensure CORS headers are set even on errors
         const origin = req.headers.origin;
-        const cors = require('cors');
-        const allowedOrigins = process.env.FRONTEND_URL 
-          ? process.env.FRONTEND_URL.split(',').map(url => url.trim())
-          : [
-              'http://localhost:8002',
-              'http://localhost:3000',
-              'https://back-api.nikkisuper.my.id',
-              'https://nikkisuper.my.id',
-              'https://www.nikkisuper.my.id',
-              'https://nikkisuper.co.id',
-              'https://www.nikkisuper.co.id'
-            ];
-        
+        const productionHosts = new Set([
+          'back-api.nikkisuper.my.id',
+          'nikkisuper.my.id',
+          'www.nikkisuper.my.id',
+          'nikkisuper.co.id',
+          'www.nikkisuper.co.id',
+        ]);
+        const extraOrigins = process.env.FRONTEND_URL
+          ? process.env.FRONTEND_URL.split(',').map((url) => url.trim())
+          : [];
+        const isAllowedOrigin = (value) => {
+          if (!value) return false;
+          if (extraOrigins.includes(value)) return true;
+          if (process.env.NODE_ENV === 'development') return true;
+          try {
+            return productionHosts.has(new URL(value).hostname);
+          } catch {
+            return false;
+          }
+        };
+
         // Set CORS headers for error responses
-        if (origin && (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV === 'development')) {
+        if (origin && isAllowedOrigin(origin)) {
           res.setHeader('Access-Control-Allow-Origin', origin);
           res.setHeader('Access-Control-Allow-Credentials', 'true');
         }
